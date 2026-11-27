@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kneifzentrale · Claw</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --paper: #faf5e9;
+            --ink: #281626;
+            --muted: #684e58;
+            --red: #bb292e;
+            --line: #e2d3c7;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: system-ui, sans-serif;
+            line-height: 1.55;
+        }
+
+        header, main {
+            width: min(70rem, calc(100% - 3rem));
+            margin-inline: auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-block: 1.25rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .wordmark {
+            font-weight: 900;
+            letter-spacing: .15em;
+        }
+
+        a {
+            color: var(--ink);
+            text-underline-offset: .2em;
+        }
+
+        a:hover { color: var(--red); }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(2rem, 5vw, 4rem);
+            align-items: center;
+            padding-block: clamp(2.5rem, 9vw, 7rem);
+        }
+
+        h1 {
+            margin: 0;
+            font-family: Georgia, serif;
+            font-size: clamp(2.75rem, 6.6vw, 6rem);
+            font-weight: 700;
+            letter-spacing: -.065em;
+            line-height: .98;
+        }
+
+        h1 em { color: var(--red); }
+
+        .intro {
+            max-width: 33ch;
+            margin-block: 1.5rem;
+            color: var(--muted);
+            font-size: 1.125rem;
+        }
+
+        button {
+            padding: .8rem 1.25rem;
+            border: 2px solid var(--ink);
+            border-radius: .4rem;
+            background: var(--ink);
+            color: var(--paper);
+            font: inherit;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        button:hover {
+            border-color: var(--red);
+            background: var(--red);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--red);
+            outline-offset: 4px;
+        }
+
+        #report {
+            min-height: 3.1em;
+            margin-block: .9rem 0;
+            color: var(--muted);
+        }
+
+        .scene {
+            display: grid;
+            place-items: center;
+            aspect-ratio: 1 / 1;
+            margin: 0;
+            overflow: hidden;
+            border: 1px solid #f0a996;
+            border-radius: 50% 50% 1.2rem 1.2rem;
+            background: radial-gradient(circle at 50% 43%, #ffdbbf, #f8ae99);
+        }
+
+        .crab {
+            width: 90%;
+            position: relative;
+            aspect-ratio: 1.4;
+            isolation: isolate;
+        }
+
+        .shell {
+            position: absolute;
+            z-index: 2;
+            inset: 42% 28% 18%;
+            border: .28rem solid var(--ink);
+            border-radius: 53% 53% 45% 45% / 62% 62% 46% 46%;
+            background: linear-gradient(150deg, #ff8569, #d93635 75%);
+            box-shadow: inset 0 -.55rem #b32433;
+        }
+
+        .eye {
+            position: absolute;
+            bottom: 52%;
+            width: 19%;
+            height: 58%;
+            border: .22rem solid var(--ink);
+            border-radius: 48%;
+            background: #fff8ea;
+        }
+
+        .eye::after {
+            content: "";
+            position: absolute;
+            inset: 32% 16% 25% 40%;
+            border-radius: 50%;
+            background: var(--ink);
+        }
+
+        .eye.left { left: 22%; transform: rotate(-9deg); }
+        .eye.right { right: 22%; transform: rotate(9deg); }
+
+        .mouth {
+            position: absolute;
+            inset: 51% 39% 28%;
+            border-bottom: .22rem solid var(--ink);
+            border-radius: 50%;
+            transform: rotate(-7deg);
+        }
+
+        .arm {
+            position: absolute;
+            z-index: 1;
+            left: 20%;
+            top: 35%;
+            width: 18%;
+            height: 30%;
+            border: solid var(--ink);
+            border-width: 0 0 .25rem .25rem;
+            border-radius: 0 0 0 63%;
+            background: #d93635;
+            transform: rotate(-18deg);
+        }
+
+        .arm.right {
+            left: auto;
+            right: 20%;
+            transform: scaleX(-1) rotate(-18deg);
+        }
+
+        .pincer {
+            position: absolute;
+            z-index: 3;
+            top: 13%;
+            left: 7%;
+            width: 25%;
+            height: 36%;
+            transform: rotate(-24deg);
+            transform-origin: 80% 80%;
+        }
+
+        .pincer.right {
+            left: auto;
+            right: 7%;
+            transform: scaleX(-1) rotate(-24deg);
+            transform-origin: 20% 80%;
+        }
+
+        .pincer::before, .pincer::after {
+            content: "";
+            position: absolute;
+            border: .25rem solid var(--ink);
+            background: linear-gradient(160deg, #ff8569, #e7483d 65%);
+        }
+
+        .pincer::before {
+            inset: 0 24% 0 1%;
+            border-radius: 65% 28% 48% 53%;
+        }
+
+        .pincer::after {
+            inset: 29% 0 0 51%;
+            border-radius: 35% 68% 60% 60%;
+            transform: rotate(18deg);
+            transform-origin: 30% 95%;
+        }
+
+        .legs, .legs::before, .legs::after {
+            position: absolute;
+            width: 23%;
+            height: 13%;
+            border-top: .32rem solid var(--ink);
+            border-radius: 55%;
+        }
+
+        .legs {
+            left: 14%;
+            top: 65%;
+            transform: rotate(-25deg);
+        }
+
+        .legs.right {
+            left: auto;
+            right: 14%;
+            transform: scaleX(-1) rotate(-25deg);
+        }
+
+        .legs::before, .legs::after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            top: 32%;
+            transform: translate(.35rem, .55rem) rotate(-6deg);
+        }
+
+        .legs::after { transform: translate(.75rem, 1.2rem) rotate(-13deg); }
+
+        .shadow {
+            position: absolute;
+            inset: 81% 13% 9%;
+            z-index: -1;
+            border-radius: 50%;
+            background: #75233522;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .pinching .pincer::after { animation: snap .3s ease-in-out 2; }
+        }
+
+        @keyframes snap {
+            50% { transform: rotate(-27deg) translateX(-15%); }
+        }
+
+        @media (max-width: 44rem) {
+            main {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .scene {
+                width: min(100%, 24rem);
+                justify-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="wordmark">CLAW</span>
+        <a href="/health">Serverstatus</a>
+    </header>
+
+    <main>
+        <section aria-labelledby="title">
+            <h1 id="title">Dieser Server hat <em>Scheren.</em></h1>
+            <p class="intro">Der Krebs ist heute allein im Rechenzentrum. Bitte keine Kabel vor die Scheren halten.</p>
+            <button type="button" id="pinch" hidden>Einmal kneifen</button>
+            <p id="report" role="status">Bisher wurde niemand gekniffen.</p>
+        </section>
+
+        <figure class="scene" aria-hidden="true">
+            <div class="crab" id="crab">
+                <span class="shadow"></span>
+                <span class="legs left"></span><span class="legs right"></span>
+                <span class="arm left"></span><span class="arm right"></span>
+                <span class="pincer left"></span><span class="pincer right"></span>
+                <div class="shell">
+                    <span class="eye left"></span><span class="eye right"></span>
+                    <span class="mouth"></span>
+                </div>
+            </div>
+        </figure>
+    </main>
+
+    <script>
+        const button = document.querySelector('#pinch');
+        const report = document.querySelector('#report');
+        const crab = document.querySelector('#crab');
+        const excuses = [
+            'Das war ein Versehen.',
+            'Die Ermittlungen laufen.',
+            'Der Krebs verweigert die Aussage.',
+            'Die IT hat ein Ticket eröffnet.'
+        ];
+        let pinches = 0;
+
+        button.hidden = false;
+        button.addEventListener('click', () => {
+            const excuse = excuses[pinches % excuses.length];
+            pinches += 1;
+            report.textContent = pinches + ' Kneifer. ' + excuse;
+            crab.classList.remove('pinching');
+            // Restart the animation even if the last pinch is still in progress.
+            void crab.offsetWidth;
+            crab.classList.add('pinching');
+        });
+    </script>
+</body>
+</html>

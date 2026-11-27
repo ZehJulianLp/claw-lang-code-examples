@@ -1,0 +1,46 @@
+diff --git a/claw/claw-state.c b/claw/claw-state.c
+index 0a0182d..0c92626 100644
+--- a/claw/claw-state.c
++++ b/claw/claw-state.c
+@@ -1148,7 +1148,9 @@ Value* ffi_call_function(State* state, Node* args, struct FunctionData* funcData
+
+     void* returnValue = NULL;
+     if (returnType != &ffi_type_void) {
+-        returnValue = malloc(returnType->size); // Allocate memory for the return value
++        size_t returnSize = returnType->size;
++        // libffi writes narrow integer returns into a full register-sized slot.
++        returnValue = malloc(returnSize < sizeof(ffi_arg) ? sizeof(ffi_arg) : returnSize);
+     }
+
+     ffi_call(&cif, funcPtr, returnValue, (void**) argArray); // Call the function with the prepared arguments
+@@ -1157,14 +1159,22 @@ Value* ffi_call_function(State* state, Node* args, struct FunctionData* funcData
+     if (returnType == &ffi_type_void) {
+         Value* nil();
+         result = nil();
+-    } else if (returnType == &ffi_type_uint8 || returnType == &ffi_type_sint8) {
+-        result = create_integer_value(*(uint8_t*)returnValue); // Assuming the return value is an 8-bit integer
+-    } else if (returnType == &ffi_type_uint16 || returnType == &ffi_type_sint16) {
+-        result = create_integer_value(*(uint16_t*)returnValue); // Assuming the return value is a 16-bit integer
+-    } else if (returnType == &ffi_type_uint32 || returnType == &ffi_type_sint32) {
+-        result = create_integer_value(*(uint32_t*)returnValue); // Assuming the return value is a 32-bit integer
+-    } else if (returnType == &ffi_type_uint64 || returnType == &ffi_type_sint64) {
+-        result = create_integer_value(*(uint64_t*)returnValue); // Assuming the return value is a 64-bit integer
++    } else if (returnType == &ffi_type_sint8) {
++        result = create_integer_value((int8_t)*(ffi_arg*)returnValue);
++    } else if (returnType == &ffi_type_uint8) {
++        result = create_integer_value((uint8_t)*(ffi_arg*)returnValue);
++    } else if (returnType == &ffi_type_sint16) {
++        result = create_integer_value((int16_t)*(ffi_arg*)returnValue);
++    } else if (returnType == &ffi_type_uint16) {
++        result = create_integer_value((uint16_t)*(ffi_arg*)returnValue);
++    } else if (returnType == &ffi_type_sint32) {
++        result = create_integer_value((int32_t)*(ffi_arg*)returnValue);
++    } else if (returnType == &ffi_type_uint32) {
++        result = create_integer_value((uint32_t)*(ffi_arg*)returnValue);
++    } else if (returnType == &ffi_type_sint64) {
++        result = create_integer_value(*(int64_t*)returnValue);
++    } else if (returnType == &ffi_type_uint64) {
++        result = create_integer_value(*(uint64_t*)returnValue);
+     } else if (returnType == &ffi_type_float) {
+         result = create_float_value(*((float*)returnValue)); // Assuming the return value is a float
+     } else if (returnType == &ffi_type_double) {
